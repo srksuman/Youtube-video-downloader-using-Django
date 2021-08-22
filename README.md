@@ -1,7 +1,7 @@
 # Youtube video downloader using Django
 Using Django as a backend along with pytube module to create Youtbue Video Downloader. 
 # Demo
-
+![youtube](https://user-images.githubusercontent.com/67781881/130342876-f2ab2784-7762-4883-92bf-4635632757ec.gif)
 ## Prerequisite:
 * pytube: pytube is a lightweight, Pythonic, dependency-free, library (and command-line utility) for downloading YouTube Videos.
 * Django: Django is a Python-based free and open-source web framework that follows the model–template–views architectural pattern.
