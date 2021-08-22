@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block css %}
+input[type=url] {
+  border: 5px solid #7ed214;
+  border-radius: 5px;
+}
+{% endblock css %}
+
+
+{% block content %}
+<div class="container mt-5">
+<div class="text-center">
+<h1>Youtube video Downloader</h1>
+</div>
+<div class="mt-5">
+<form action="" method="post" id="search-form">
+{% csrf_token %}
+<input type="url" id='url' name="url" class="form-control" id="" placeholder="Paste your video link here" >
+<input type="submit" value="Search" class="mt-2 btn btn-dark" id="search">
+</form>
+</div>
+
+<div id="card" class="mt-5">
+
+</div>
+
+
+
+
+</div>
+{% endblock content %}
+
+{% block js %}
+$(document).ready(function(){
+$('#search').click(function(e){
+  e.preventDefault();
+  let csrf = $('input[name=csrfmiddlewaretoken]').val();
+  let url = $('#url').val()
+  if (url != ""){
+    $.ajax({
+      url: {% url 'details' %},
+      method:'POST',
+      data :{url:url,csrfmiddlewaretoken:csrf},
+      success:function(data){
+        $('#search-form')[0].reset();
+        console.log(data)
+        if (data['status'] == 200){
+ $('#card').html(`
+ <p>
+<div class="row">
+<div class="col-md-6">
+<iframe  src="https://www.youtube.com/embed/${data['url_code']}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:300px"></iframe>
+
+{% comment %} collapse {% endcomment %}
+<p>
+  <button class="btn btn-outline-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+   <b>Description</b> 
+  </button>
+</p>
+<div style="min-height: 120px;">
+  <div class="collapse collapse-horizontal" id="collapseWidthExample">
+    <div class="card card-body" style="width: 100%;">
+     ${data['desc']}
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="col-md-6">
+<h4>${data['title']}</h4>
+<p> <b>Views:</b> ${data['views']}   <b>Time:</b> ${data['duration']} <b>Rating:</b> ${data['rating']}
+<a href="" class="btn btn-secondary mx-3 " id="download">Download</a>
+</p>
+
+{% comment %} loading {% endcomment %}
+<p id="loading">
+
+</p>
+{% comment %} loading {% endcomment %}
+</div>
+</div>
+</p>
+ `)
+
+$('#download').click(function(e){
+e.preventDefault();
+
+$('#loading').html(`
+<div class="text-center">
+D
+<div class="spinner-grow text-primary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+O
+<div class="spinner-grow text-secondary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+W
+<div class="spinner-grow text-success" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+N
+<div class="spinner-grow text-danger" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+L
+<div class="spinner-grow text-warning" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+O
+<div class="spinner-grow text-info" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+A
+<div class="spinner-grow text-secondary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+D
+<div class="spinner-grow text-dark" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+I
+<div class="spinner-grow text-primary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+N
+<div class="spinner-grow text-secondary" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+G
+</div>
+`)
+
+$.ajax({
+url: {% url 'download' %},
+method: 'GET',
+data : {'url':data['url']},
+success:function(data){
+$('#loading').html(`
+<h3 class="text-center">${data['status']}</h3>
+`)
+}
+})
+
+})
+
+
+
+        }
+
+        else{
+            $('#card').html(`<h2 class="text-center">${data['value']}</h2>`)
+        }
+      
+      }
+    })
+  }else{
+    $('#card').html(`<h2 class="text-center">OOPS! Empty URL</h2>`)
+  }
+});
+
+
+
+})
+{% endblock js %}
