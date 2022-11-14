@@ -1,5 +1,5 @@
 from django.http.response import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from pytube import YouTube
 import requests
 
@@ -18,7 +18,8 @@ def convert(seconds):
 
 
 def detailsFunction(request):
-    if request.is_ajax:
+    is_ajax = request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    if is_ajax:
         url = request.POST.get('url')
         request = requests.get(url)
         if 'youtube.com' in url or 'youtu.be' in url:
